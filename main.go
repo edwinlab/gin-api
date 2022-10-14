@@ -36,6 +36,18 @@ func main() {
 		ctx.JSON(http.StatusOK, cars)
 	})
 	// POST /cars - create cars
+	r.POST("/cars", func(ctx *gin.Context) {
+		var car Car
+		if err := ctx.ShouldBindJSON(&car); err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+
+		cars = append(cars, car)
+		ctx.JSON(http.StatusCreated, car)
+	})
 	// DELETE /cars/:id - delete cars
 
 	r.Run()
