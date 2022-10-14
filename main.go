@@ -32,34 +32,40 @@ func main() {
 	})
 
 	// GET /cars - list cars
-	r.GET("/cars", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, cars)
-	})
+	r.GET("/cars", listCars)
 	// POST /cars - create cars
-	r.POST("/cars", func(ctx *gin.Context) {
-		var car Car
-		if err := ctx.ShouldBindJSON(&car); err != nil {
-			ctx.JSON(http.StatusBadRequest, gin.H{
-				"error": err.Error(),
-			})
-			return
-		}
-
-		cars = append(cars, car)
-		ctx.JSON(http.StatusCreated, car)
-	})
+	r.POST("/cars", createCar)
 	// DELETE /cars/:id - delete cars
-	r.DELETE("/cars/:id", func(ctx *gin.Context) {
-		id := ctx.Param("id")
-		for i, car := range cars {
-			if car.ID == id {
-				cars = append(cars[:i], cars[i+1:]...)
-				break
-			}
-		}
-
-		ctx.Status(http.StatusNoContent)
-	})
+	r.DELETE("/cars/:id", deleteCar)
 
 	r.Run()
+}
+
+func listCars(ctx *gin.Context) {
+	ctx.JSON(http.StatusOK, cars)
+}
+
+func createCar(ctx *gin.Context) {
+	var car Car
+	if err := ctx.ShouldBindJSON(&car); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	cars = append(cars, car)
+	ctx.JSON(http.StatusCreated, car)
+}
+
+func deleteCar(ctx *gin.Context) {
+	id := ctx.Param("id")
+	for i, car := range cars {
+		if car.ID == id {
+			cars = append(cars[:i], cars[i+1:]...)
+			break
+		}
+	}
+
+	ctx.Status(http.StatusNoContent)
 }
