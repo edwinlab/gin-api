@@ -49,6 +49,17 @@ func main() {
 		ctx.JSON(http.StatusCreated, car)
 	})
 	// DELETE /cars/:id - delete cars
+	r.DELETE("/cars/:id", func(ctx *gin.Context) {
+		id := ctx.Param("id")
+		for i, car := range cars {
+			if car.ID == id {
+				cars = append(cars[:i], cars[i+1:]...)
+				break
+			}
+		}
+
+		ctx.Status(http.StatusNoContent)
+	})
 
 	r.Run()
 }
