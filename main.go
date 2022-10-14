@@ -32,6 +32,9 @@ func main() {
 	})
 
 	// GET /cars - list cars
+	r.GET("/cars", func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, cars)
+	})
 	// POST /cars - create cars
 	// DELETE /cars/:id - delete cars
 
